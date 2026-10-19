@@ -163,7 +163,7 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
-          $ref: '#/components/responses/MenuItemNotFound'
+          $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
   /menu-item-images/{menuItemId}:
@@ -191,7 +191,7 @@ paths:
                 description: Alternative image text.
                 type: string
         '404':
-          $ref: '#/components/responses/MenuItemNotFound'
+          $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
   /orders:
@@ -351,7 +351,7 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
-          $ref: '#/components/responses/OrderNotFound'
+          $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
     patch:
@@ -408,7 +408,7 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
-          $ref: '#/components/responses/OrderNotFound'
+          $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
     delete:
@@ -434,7 +434,7 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
-          $ref: '#/components/responses/OrderNotFound'
+          $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
   /order-items:
@@ -468,7 +468,7 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
-          $ref: '#/components/responses/OrderNotFound'
+          $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
   /revenue:
@@ -593,7 +593,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/OAuth2Client'
         '400':
-          $ref: '#/components/responses/OAuth2RegistrationBadRequest'
+          $ref: '#/components/responses/OAuth2BadRequest'
         '500':
           $ref: '#/components/responses/OAuth2ServerError'
   /oauth2/register/{clientId}:
@@ -618,7 +618,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/OAuth2Client'
         '401':
-          $ref: '#/components/responses/OAuth2RegistrationUnauthorized'
+          $ref: '#/components/responses/OAuth2Unauthorized'
         '500':
           $ref: '#/components/responses/OAuth2ServerError'
     put:
@@ -661,9 +661,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/OAuth2Client'
         '400':
-          $ref: '#/components/responses/OAuth2RegistrationBadRequest'
+          $ref: '#/components/responses/OAuth2BadRequest'
         '401':
-          $ref: '#/components/responses/OAuth2RegistrationUnauthorized'
+          $ref: '#/components/responses/OAuth2Unauthorized'
         '500':
           $ref: '#/components/responses/OAuth2ServerError'
     delete:
@@ -681,7 +681,7 @@ paths:
         '204':
           description: Client registration deleted.
         '401':
-          $ref: '#/components/responses/OAuth2RegistrationUnauthorized'
+          $ref: '#/components/responses/OAuth2Unauthorized'
         '500':
           $ref: '#/components/responses/OAuth2ServerError'
   /oauth2/token:
@@ -728,46 +728,30 @@ paths:
                     - client_credentials
                     - refresh_token
                   description: The OAuth2 grant type.
-                  examples:
-                    - client_credentials
                 client_id:
                   type: string
                   description: Client identifier. Omit when authenticating with HTTP Basic.
-                  examples:
-                    - client_fa18ff130e1a8f445509f7e5d1d97880
                 client_secret:
                   type: string
                   description: Client secret. Omit when authenticating with HTTP Basic.
-                  examples:
-                    - YOUR_CLIENT_SECRET
                 code:
                   type: string
                   description: The authorization code (required for `authorization_code`).
-                  examples:
-                    - AUTHORIZATION_CODE
                 redirect_uri:
                   type: string
                   format: uri
                   description: Must match the redirect URI used in the authorization request. Required for `authorization_code`).
-                  examples:
-                    - https://api.cafe.redocly.com/callback
                 code_verifier:
                   type: string
                   minLength: 43
                   maxLength: 128
                   description: PKCE code verifier (RFC 7636) Required when the authorization request included a `code_challenge`.
-                  examples:
-                    - dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
                 refresh_token:
                   type: string
                   description: The refresh token. Required for `refresh_token`.
-                  examples:
-                    - YOUR_REFRESH_TOKEN
                 scope:
                   type: string
                   description: Space-separated scopes to request. Defaults to the previously granted or registered scopes.
-                  examples:
-                    - menu:read orders:read
               required:
                 - grant_type
             examples:
@@ -835,26 +819,18 @@ paths:
                 token:
                   type: string
                   description: The access or refresh token to revoke.
-                  examples:
-                    - YOUR_ACCESS_TOKEN
                 token_type_hint:
                   type: string
                   enum:
                     - access_token
                     - refresh_token
                   description: Optional hint about the token type.
-                  examples:
-                    - access_token
                 client_id:
                   type: string
                   description: Client identifier. Omit when authenticating with HTTP Basic.
-                  examples:
-                    - client_1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d
                 client_secret:
                   type: string
                   description: Client secret. Omit when authenticating with HTTP Basic.
-                  examples:
-                    - YOUR_CLIENT_SECRET
               required:
                 - token
             examples:
@@ -1885,13 +1861,20 @@ components:
                 title: A menu item with the name "coffee" already exists
                 status: 409
                 instance: /menu
-    MenuItemNotFound:
-      description: Menu item not found.
+    NotFound:
+      description: Resource not found.
       content:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/Error'
           examples:
+            NotFound:
+              summary: No resource at this path
+              dataValue:
+                type: about:blank
+                title: Cannot GET /.well-known/oauth-authorization-server
+                status: 404
+                instance: /.well-known/oauth-authorization-server
             MenuItemNotFound:
               summary: No menu item with this ID
               dataValue:
@@ -1899,13 +1882,6 @@ components:
                 title: Menu item not found
                 status: 404
                 instance: /menu/prd_01h1s5z6vf2mm1mz3hevnn9va7
-    OrderNotFound:
-      description: Order not found.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
             OrderNotFound:
               summary: No order with this ID
               dataValue:
@@ -1913,13 +1889,20 @@ components:
                 title: Order not found
                 status: 404
                 instance: /orders/ord_01h1s5z6vf2mm1mz3hevnn9va7
-    OAuth2RegistrationBadRequest:
-      description: Invalid client metadata (RFC 7591 Section 3.2.2).
+    OAuth2BadRequest:
+      description: |
+        OAuth2 error (RFC 6749 Section 5.2 / RFC 7591 Section 3.2.2).
+        The `error` field carries the standard OAuth2 error code.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/OAuthError'
           examples:
+            InvalidGrant:
+              summary: Refresh token is invalid or expired
+              dataValue:
+                error: invalid_grant
+                error_description: Invalid refresh token
             InvalidClientMetadata:
               summary: Requested scope does not exist
               dataValue:
@@ -1937,38 +1920,13 @@ components:
               dataValue:
                 error: server_error
                 error_description: An internal error occurred
-    OAuth2RegistrationUnauthorized:
-      description: The registration access token is missing or invalid (RFC 7592 Section 2.1).
-      headers:
-        WWW-Authenticate:
-          description: 'Authentication challenge, for example: `Bearer realm="redocly-cafe", error="invalid_token"`.'
-          schema:
-            type: string
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/OAuthError'
-          examples:
-            InvalidToken:
-              summary: Wrong registration access token
-              dataValue:
-                error: invalid_token
-                error_description: Invalid registration access token
-    OAuth2BadRequest:
-      description: |
-        OAuth2 error (RFC 6749 Section 5.2 / RFC 7591 Section 3.2.2).
-        The `error` field carries the standard OAuth2 error code.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/OAuthError'
     OAuth2Unauthorized:
       description: |
-        Client authentication failed (`error: invalid_client`, RFC 6749 Section 5.2).
-        When the client used HTTP Basic, the response carries a `WWW-Authenticate: Basic` challenge.
+        Client authentication failed (`error: invalid_client`, RFC 6749 Section 5.2) or the presented bearer token is invalid (`error: invalid_token`, RFC 6750).
+        The response carries a `WWW-Authenticate` challenge naming the expected authentication scheme.
       headers:
         WWW-Authenticate:
-          description: 'Authentication challenge, for example: `Basic realm="redocly-cafe"`.'
+          description: 'Authentication challenge, for example: `Basic realm="redocly-cafe"` or `Bearer realm="redocly-cafe", error="invalid_token"`.'
           schema:
             type: string
       content:
@@ -1981,17 +1939,8 @@ components:
               dataValue:
                 error: invalid_client
                 error_description: Invalid client credentials
-    NotFound:
-      description: Resource not found.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            NotFound:
-              summary: No resource at this path
+            InvalidToken:
+              summary: Wrong registration access token
               dataValue:
-                type: about:blank
-                title: Cannot GET /.well-known/oauth-authorization-server
-                status: 404
-                instance: /.well-known/oauth-authorization-server
+                error: invalid_token
+                error_description: Invalid registration access token
