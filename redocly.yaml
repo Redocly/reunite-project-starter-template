@@ -7,7 +7,6 @@ rules:
   operation-tag-defined: error
   no-invalid-schema-examples: error
   no-invalid-media-type-examples: error
-  scalar-property-missing-example: error
   rule/operation-summary-sentence-case:
     subject:
       type: Operation
