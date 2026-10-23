@@ -1,6 +1,6 @@
-# Edit with Redocly Reunite
+# Edit with Redocly Platform
 
-The [Get started with the Reunite editor](https://redocly.com/docs/realm/get-started/start-reunite-editor) guides you through your first experiences with Reunite.
+The [Get started with the Redocly editor](https://redocly.com/docs/platform/get-started/start-reunite-editor) guides you through your first experiences with Redocly platform.
 It's a **great** way to be introduced to the workflow of making changes.
 
 Afterwards, you can adjust with your own content.
